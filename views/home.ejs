@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<title>الرئيسية — نظام تسجيل الدخول</title>
+<%- include('partials/head') %>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="brand">auth<span>.app</span></a>
+  <div class="topbar-links">
+    <% if (user) { %>
+      <a href="/dashboard">لوحة التحكم</a>
+    <% } else { %>
+      <a href="/login">تسجيل الدخول</a>
+      <a href="/register" class="accent">إنشاء حساب</a>
+    <% } %>
+  </div>
+</div>
+
+<div class="home-hero">
+  <h1>نظام تسجيل دخول <span>حقيقي وآمن</span> جاهز للاستخدام</h1>
+  <p>تسجيل، تسجيل دخول، جلسات محمية، وتشفير حقيقي لكلمات المرور — كل هذا يعمل بالفعل، الآن.</p>
+  <div class="home-cta-row">
+    <% if (user) { %>
+      <a href="/dashboard" class="topbar-links accent" style="padding:15px 30px; border-radius:999px; font-weight:800;">الذهاب إلى لوحتي</a>
+    <% } else { %>
+      <a href="/register" class="topbar-links accent" style="padding:15px 30px; border-radius:999px; font-weight:800;">ابدئي الآن — مجانًا</a>
+      <a href="/login" class="topbar-links" style="padding:15px 30px; border-radius:999px;">لديك حساب؟ سجّلي الدخول</a>
+    <% } %>
+  </div>
+</div>
+
+</body>
+</html>
