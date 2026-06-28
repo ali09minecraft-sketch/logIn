@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<title>لوحة التحكم</title>
+<%- include('partials/head') %>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="brand">auth<span>.app</span></a>
+  <div class="topbar-links">
+    <span style="color:var(--ink-dim); font-size:14px;">مرحبًا، <%= profile.name %> 👋</span>
+  </div>
+</div>
+
+<div class="dash-wrap">
+  <div class="dash-hero">
+    <h1>أهلًا بك من جديد، <%= profile.name.split(' ')[0] %></h1>
+    <p>هذه لوحة تحكمك الخاصة — كل ما تراه هنا محمي ولا يمكن لأي زائر غير مسجّل الدخول رؤيته.</p>
+  </div>
+
+  <div class="dash-grid">
+    <div class="dash-card">
+      <span class="dash-card-label">الاسم الكامل</span>
+      <div class="dash-card-value"><%= profile.name %></div>
+    </div>
+    <div class="dash-card">
+      <span class="dash-card-label">البريد الإلكتروني</span>
+      <div class="dash-card-value"><%= profile.email %></div>
+    </div>
+    <div class="dash-card">
+      <span class="dash-card-label">تاريخ إنشاء الحساب</span>
+      <div class="dash-card-value"><%= profile.created_at %></div>
+    </div>
+    <div class="dash-card">
+      <span class="dash-card-label">حالة الحساب</span>
+      <div class="dash-card-value" style="color:var(--success);">نشط ✓</div>
+    </div>
+  </div>
+
+  <form class="logout-form" action="/logout" method="POST">
+    <button type="submit" class="btn-logout">تسجيل الخروج</button>
+  </form>
+</div>
+
+</body>
+</html>
