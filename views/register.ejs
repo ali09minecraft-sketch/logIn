@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<title>إنشاء حساب</title>
+<%- include('partials/head') %>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="brand">auth<span>.app</span></a>
+  <div class="topbar-links">
+    <a href="/login">لديك حساب؟ سجّلي الدخول</a>
+  </div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <span class="auth-eyebrow">خطوة واحدة فقط</span>
+    <h1>إنشاء حساب جديد</h1>
+    <p class="auth-sub">سجّلي بياناتك لإنشاء حسابك، يستغرق أقل من دقيقة.</p>
+
+    <% if (error) { %>
+      <div class="alert"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/register" id="registerForm" novalidate>
+      <div class="field">
+        <label for="name">الاسم الكامل</label>
+        <input type="text" id="name" name="name" placeholder="اسمك الكامل" value="<%= old.name || '' %>" required minlength="2" autocomplete="name">
+      </div>
+
+      <div class="field">
+        <label for="email">البريد الإلكتروني</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" value="<%= old.email || '' %>" required autocomplete="email">
+      </div>
+
+      <div class="field">
+        <label for="password">كلمة المرور</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" name="password" placeholder="8 أحرف على الأقل" required minlength="8" autocomplete="new-password">
+          <button type="button" class="pw-toggle" data-target="password">إظهار</button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="field-hint" id="strengthLabel">قوة كلمة المرور تظهر هنا</div>
+      </div>
+
+      <div class="field">
+        <label for="passwordConfirm">تأكيد كلمة المرور</label>
+        <div class="pw-wrap">
+          <input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="أعيدي كتابة كلمة المرور" required autocomplete="new-password">
+          <button type="button" class="pw-toggle" data-target="passwordConfirm">إظهار</button>
+        </div>
+        <div class="field-hint" id="matchLabel"></div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">إنشاء الحساب</button>
+    </form>
+
+    <div class="auth-footer-note">
+      لديك حساب فعلاً؟ <a href="/login">سجّلي الدخول من هنا</a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.pw-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = document.getElementById(btn.dataset.target);
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    btn.textContent = showing ? 'إظهار' : 'إخفاء';
+  });
+});
+
+const pwInput = document.getElementById('password');
+const fill = document.getElementById('strengthFill');
+const label = document.getElementById('strengthLabel');
+
+function scorePassword(pw){
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (pw.length >= 12) score++;
+  if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+  if (/\d/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  return score;
+}
+
+pwInput.addEventListener('input', () => {
+  const score = scorePassword(pwInput.value);
+  const pct = (score / 5) * 100;
+  fill.style.width = pct + '%';
+
+  if (pwInput.value.length === 0){
+    fill.style.background = 'transparent';
+    label.textContent = 'قوة كلمة المرور تظهر هنا';
+  } else if (score <= 1){
+    fill.style.background = 'var(--danger)';
+    label.textContent = 'ضعيفة — جرّبي إضافة أرقام ورموز';
+  } else if (score <= 3){
+    fill.style.background = 'var(--orange)';
+    label.textContent = 'متوسطة — جيدة لكن يمكن تحسينها';
+  } else {
+    fill.style.background = 'var(--success)';
+    label.textContent = 'قوية ✓';
+  }
+});
+
+const confirmInput = document.getElementById('passwordConfirm');
+const matchLabel = document.getElementById('matchLabel');
+
+function checkMatch(){
+  if (!confirmInput.value){
+    matchLabel.textContent = '';
+    return;
+  }
+  if (pwInput.value === confirmInput.value){
+    matchLabel.textContent = 'متطابقتان ✓';
+    matchLabel.style.color = 'var(--success)';
+  } else {
+    matchLabel.textContent = 'كلمتا المرور غير متطابقتين';
+    matchLabel.style.color = 'var(--danger)';
+  }
+}
+confirmInput.addEventListener('input', checkMatch);
+pwInput.addEventListener('input', checkMatch);
+
+document.getElementById('registerForm').addEventListener('submit', (e) => {
+  const btn = document.getElementById('submitBtn');
+  if (pwInput.value !== confirmInput.value){
+    e.preventDefault();
+    checkMatch();
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'جاري الإنشاء…';
+});
+</script>
+
+</body>
+</html>
